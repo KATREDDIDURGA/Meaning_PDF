@@ -1,0 +1,116 @@
+selection,reference,prediction,BLEU,ROUGE-L,BERTScore,CosineSim,latency,status
+Collaborated,Worked together with the professor as a team to conduct a comparative analysis of credit scoring approaches using XGBoost.,EXCEPTION,0,0,0,0,0,"
+**********************************************************************
+  Resource [93mpunkt_tab[0m not found.
+  Please use the NLTK Downloader to obtain the resource:
+
+  [31m>>> import nltk
+  >>> nltk.download('punkt_tab')
+  [0m
+  For more information see: https://www.nltk.org/data.html
+
+  Attempted to load [93mtokenizers/punkt_tab/english/[0m
+
+  Searched in:
+    - '/home/codespace/nltk_data'
+    - '/usr/local/python/3.12.1/nltk_data'
+    - '/usr/local/python/3.12.1/share/nltk_data'
+    - '/usr/local/python/3.12.1/lib/nltk_data'
+    - '/usr/share/nltk_data'
+    - '/usr/local/share/nltk_data'
+    - '/usr/lib/nltk_data'
+    - '/usr/local/lib/nltk_data'
+**********************************************************************
+"
+Architected,Designed and structured complex GenAI solutions for banking and healthcare systems.,EXCEPTION,0,0,0,0,0,"
+**********************************************************************
+  Resource [93mpunkt_tab[0m not found.
+  Please use the NLTK Downloader to obtain the resource:
+
+  [31m>>> import nltk
+  >>> nltk.download('punkt_tab')
+  [0m
+  For more information see: https://www.nltk.org/data.html
+
+  Attempted to load [93mtokenizers/punkt_tab/english/[0m
+
+  Searched in:
+    - '/home/codespace/nltk_data'
+    - '/usr/local/python/3.12.1/nltk_data'
+    - '/usr/local/python/3.12.1/share/nltk_data'
+    - '/usr/local/python/3.12.1/lib/nltk_data'
+    - '/usr/share/nltk_data'
+    - '/usr/local/share/nltk_data'
+    - '/usr/lib/nltk_data'
+    - '/usr/local/lib/nltk_data'
+**********************************************************************
+"
+microservices,"A software architecture approach where applications are built as a collection of small, independent services that communicate with each other.",EXCEPTION,0,0,0,0,0,"
+**********************************************************************
+  Resource [93mpunkt_tab[0m not found.
+  Please use the NLTK Downloader to obtain the resource:
+
+  [31m>>> import nltk
+  >>> nltk.download('punkt_tab')
+  [0m
+  For more information see: https://www.nltk.org/data.html
+
+  Attempted to load [93mtokenizers/punkt_tab/english/[0m
+
+  Searched in:
+    - '/home/codespace/nltk_data'
+    - '/usr/local/python/3.12.1/nltk_data'
+    - '/usr/local/python/3.12.1/share/nltk_data'
+    - '/usr/local/python/3.12.1/lib/nltk_data'
+    - '/usr/share/nltk_data'
+    - '/usr/local/share/nltk_data'
+    - '/usr/lib/nltk_data'
+    - '/usr/local/lib/nltk_data'
+**********************************************************************
+"
+K-Means,An unsupervised machine learning algorithm that groups data points into k clusters based on similarity.,EXCEPTION,0,0,0,0,0,"
+**********************************************************************
+  Resource [93mpunkt_tab[0m not found.
+  Please use the NLTK Downloader to obtain the resource:
+
+  [31m>>> import nltk
+  >>> nltk.download('punkt_tab')
+  [0m
+  For more information see: https://www.nltk.org/data.html
+
+  Attempted to load [93mtokenizers/punkt_tab/english/[0m
+
+  Searched in:
+    - '/home/codespace/nltk_data'
+    - '/usr/local/python/3.12.1/nltk_data'
+    - '/usr/local/python/3.12.1/share/nltk_data'
+    - '/usr/local/python/3.12.1/lib/nltk_data'
+    - '/usr/share/nltk_data'
+    - '/usr/local/share/nltk_data'
+    - '/usr/lib/nltk_data'
+    - '/usr/local/lib/nltk_data'
+**********************************************************************
+"
+compliance automation,"Using technology to automatically enforce regulatory checks and compliance processes, reducing manual effort and errors.",EXCEPTION,0,0,0,0,0,"
+**********************************************************************
+  Resource [93mpunkt_tab[0m not found.
+  Please use the NLTK Downloader to obtain the resource:
+
+  [31m>>> import nltk
+  >>> nltk.download('punkt_tab')
+  [0m
+  For more information see: https://www.nltk.org/data.html
+
+  Attempted to load [93mtokenizers/punkt_tab/english/[0m
+
+  Searched in:
+    - '/home/codespace/nltk_data'
+    - '/usr/local/python/3.12.1/nltk_data'
+    - '/usr/local/python/3.12.1/share/nltk_data'
+    - '/usr/local/python/3.12.1/lib/nltk_data'
+    - '/usr/share/nltk_data'
+    - '/usr/local/share/nltk_data'
+    - '/usr/lib/nltk_data'
+    - '/usr/local/lib/nltk_data'
+**********************************************************************
+"

@@ -1,0 +1,40 @@
+selection,reference,prediction,BLEU,ROUGE-L,BERTScore,CosineSim,latency,status
+Collaborated,Worked together with the professor as a team to conduct a comparative analysis of credit scoring approaches using XGBoost.,"In this context, 'Collaborated' means to work together with someone, in this case, a professor, to achieve a common goal or complete a project. It implies a joint effort, where both parties share ideas, expertise, and resources to produce a result, in this case, a comparative analysis of credit scoring methodologies using XGBoost.
+
+In other words, the person collaborated with the professor to co-create or co-author the analysis, rather than working independently. This term suggests a level of teamwork, communication, and mutual support in the development of the project.",0.068,0.255,0.876,0.528,0.622,ok
+Architected,Designed and structured complex GenAI solutions for banking and healthcare systems.,"In this context, 'architected' is a verb that means to design, plan, and structure a complex system, solution, or technology. It involves creating a comprehensive framework or blueprint for how the system should work, including its components, interactions, and overall architecture.
+
+In the given sentence, 'architected GenAI solutions' means that the person or organization has designed and structured General Artificial Intelligence (GenAI) solutions specifically for the banking and healthcare industries. This implies that they have developed a tailored approach to implementing GenAI in these sectors, taking into account their unique requirements, challenges, and regulations.
+
+In essence, 'architected' highlights the person's or organization's expertise in designing and implementing complex solutions that meet the specific needs",0.000,0.157,0.854,0.580,0.909,ok
+microservices,"A software architecture approach where applications are built as a collection of small, independent services that communicate with each other.","In this context, 'microservices' refers to a software architecture pattern where a large application is broken down into smaller, independent services. Each microservice is responsible for a specific business capability or function, and they communicate with each other to achieve a common goal.
+
+Think of it like a restaurant:
+
+- Each microservice is like a specific department, such as the kitchen, the dining area, or the bar.
+- Each department works independently, but they all work together to provide a seamless dining experience.
+- If one department (microservice) experiences an issue, it doesn't bring down the entire restaurant (application).
+
+In this context, native microservices are built using specific technologies such as:
+
+- FastAPI and Flask: Python web frameworks for building micro",0.034,0.159,0.871,0.458,0.680,ok
+K-Means,An unsupervised machine learning algorithm that groups data points into k clusters based on similarity.,"In this context, 'K-Means' refers to a type of unsupervised machine learning algorithm used for clustering data. 
+
+'K-Means' is a clustering algorithm that groups similar data points into 'k' clusters based on their characteristics or features. The goal is to identify patterns or structures within the data by dividing it into distinct groups.
+
+Here's a simplified explanation of how it works:
+
+1. The algorithm starts by randomly initializing 'k' centroids (or cluster centers).
+2. Each data point is then assigned to the closest centroid based on its similarity.
+3. The centroids are updated by calculating the mean (average) of all data points assigned to each cluster.
+4. Steps 2-3 are repeated until the centroids",0.039,0.211,0.881,0.589,0.607,ok
+compliance automation,"Using technology to automatically enforce regulatory checks and compliance processes, reducing manual effort and errors.","In this context, 'compliance automation' refers to the use of technology to automate and streamline processes related to regulatory compliance. It involves the implementation of automated systems, tools, or workflows that help organizations manage and maintain compliance with various laws, regulations, and industry standards.
+
+In simpler terms, compliance automation aims to reduce the manual effort and time spent on checking and ensuring compliance by automating repetitive tasks, such as:
+
+- Data validation
+- Reporting
+- Auditing
+- Record-keeping
+
+By automating these tasks, organizations can increase efficiency, reduce errors, and free up resources to focus on more critical compliance-related activities.",0.000,0.196,0.876,0.762,0.592,ok

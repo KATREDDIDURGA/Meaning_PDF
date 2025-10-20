@@ -1,0 +1,965 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Meaning PDF v2</title>
+  <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf_viewer.min.css"/>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      display: flex;
+      height: 100vh;
+      background: #f8f9fa;
+      color: #333;
+    }
+
+    /* Main area with PDF */
+    #main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      padding: 24px;
+      overflow-y: auto;
+      background: #fff;
+      min-width: 0;
+    }
+
+    #main h2 {
+      margin: 0 0 24px 0;
+      color: #2c3e50;
+      font-weight: 600;
+      font-size: 24px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Language selector section */
+    #language-section {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 16px;
+      padding: 16px 20px;
+      background: linear-gradient(135deg, #e3f2fd, #f3e5f5);
+      border-radius: 12px;
+      border: 2px solid #90caf9;
+    }
+
+    #language-section label {
+      font-weight: 600;
+      color: #1565c0;
+      font-size: 14px;
+    }
+
+    #language-select {
+      flex: 1;
+      padding: 10px 14px;
+      border: 2px solid #90caf9;
+      border-radius: 8px;
+      background: #fff;
+      font-size: 14px;
+      font-weight: 500;
+      color: #333;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    #language-select:hover {
+      border-color: #1565c0;
+      box-shadow: 0 2px 8px rgba(21,101,192,0.2);
+    }
+
+    #language-select:focus {
+      outline: none;
+      border-color: #1565c0;
+      box-shadow: 0 0 0 3px rgba(21,101,192,0.1);
+    }
+
+    #uploadForm {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 16px;
+      padding: 20px;
+      background: #f8f9fa;
+      border-radius: 12px;
+      border: 2px dashed #dee2e6;
+      transition: border-color 0.3s ease;
+    }
+
+    #uploadForm:hover {
+      border-color: #007bff;
+    }
+
+    #uploadForm input[type="file"] {
+      flex: 1;
+      padding: 12px;
+      border: 1px solid #dee2e6;
+      border-radius: 8px;
+      background: #fff;
+      font-size: 14px;
+    }
+
+    #uploadForm button {
+      padding: 12px 24px;
+      background: linear-gradient(135deg, #007bff, #0056b3);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 14px;
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 4px rgba(0,123,255,0.2);
+    }
+
+    #uploadForm button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,123,255,0.3);
+    }
+
+    #pdf-container {
+      position: relative;
+      background: #fff;
+    }
+
+    .page-container {
+      position: relative;
+      margin-bottom: 20px;
+      border: 1px solid #e9ecef;
+      display: inline-block;
+      background: #fff;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .textLayer {
+      position: absolute;
+      top: 0; left: 0;
+      right: 0; bottom: 0;
+      color: transparent;
+      user-select: text;
+      pointer-events: auto;
+    }
+
+    /* Tooltip (expandable) */
+    #tooltip {
+      position: absolute;
+      background: linear-gradient(135deg, #fff3cd, #fff8e1);
+      border: 1px solid #f0ad4e;
+      padding: 12px 16px;
+      display: none;
+      max-width: 420px;
+      max-height: 300px;
+      overflow: auto;
+      white-space: pre-wrap;
+      border-radius: 8px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+      z-index: 10000;
+      font-size: 14px;
+      line-height: 1.5;
+      color: #856404;
+    }
+
+    #status {
+      margin-top: 12px;
+      font-size: 14px;
+      color: #6c757d;
+      padding: 12px 16px;
+      background: #e9ecef;
+      border-radius: 8px;
+      border-left: 4px solid #007bff;
+    }
+
+    /* Sidebar navigation */
+    #sidebar {
+      width: 450px;
+      background: linear-gradient(180deg, #fff, #f8f9fa);
+      display: flex;
+      flex-direction: column;
+      border-left: 1px solid #dee2e6;
+      box-shadow: -2px 0 8px rgba(0,0,0,0.05);
+    }
+
+    #sidebar nav {
+      display: flex;
+      background: #fff;
+      border-bottom: 1px solid #dee2e6;
+    }
+
+    #sidebar nav button {
+      flex: 1;
+      padding: 16px 12px;
+      border: none;
+      background: none;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 14px;
+      color: #6c757d;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+
+    #sidebar nav button:hover {
+      background: #f8f9fa;
+      color: #495057;
+    }
+
+    #sidebar nav button.active {
+      background: #fff;
+      color: #007bff;
+    }
+
+    #sidebar nav button.active::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, #007bff, #0056b3);
+      border-radius: 3px 3px 0 0;
+    }
+
+    #history, #flashcards {
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px;
+    }
+
+    #history h3, #flashcards h3 {
+      margin: 0 0 16px 0;
+      color: #2c3e50;
+      font-size: 16px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .history-item {
+      margin-bottom: 8px;
+      padding: 10px 12px;
+      background: #fff;
+      border-radius: 8px;
+      border: 1px solid #e9ecef;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+      transition: all 0.2s ease;
+      position: relative;
+    }
+
+    .history-item:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      border-color: #007bff;
+    }
+
+    .history-item .word {
+      color: #007bff;
+      font-weight: 600;
+      font-size: 14px;
+      margin-bottom: 4px;
+      display: block;
+      word-wrap: break-word;
+      padding-right: 30px;
+    }
+
+    .history-item .meaning {
+      color: #495057;
+      line-height: 1.4;
+      font-size: 13px;
+      word-wrap: break-word;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .history-item .meaning.expanded {
+      display: block;
+      -webkit-line-clamp: unset;
+    }
+
+    .history-item .expand-btn {
+      background: none;
+      border: none;
+      color: #007bff;
+      cursor: pointer;
+      font-size: 12px;
+      margin-top: 4px;
+      padding: 0;
+      text-decoration: underline;
+    }
+
+    .history-item .expand-btn:hover {
+      color: #0056b3;
+    }
+
+    .history-item .delete-btn {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      background: #dc3545;
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 20px;
+      height: 20px;
+      cursor: pointer;
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: all 0.2s ease;
+      z-index: 1;
+    }
+
+    .history-item:hover .delete-btn {
+      opacity: 1;
+    }
+
+    .history-item .delete-btn:hover {
+      background: #c82333;
+      transform: scale(1.1);
+    }
+
+    /* Enhanced Flashcard styles */
+    #flashcard-container {
+      perspective: 1000px;
+      width: 340px;
+      margin: 20px auto;
+    }
+
+    .card {
+      width: 100%;
+      height: 240px;
+      position: relative;
+      transform-style: preserve-3d;
+      transition: transform 0.6s;
+      cursor: pointer;
+      border-radius: 16px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+    }
+
+    .card.flip {
+      transform: rotateY(180deg);
+    }
+
+    .card .front, .card .back {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      backface-visibility: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      text-align: center;
+      border-radius: 16px;
+      overflow: hidden;
+    }
+
+    .card .front {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+    }
+
+    .card .front .word {
+      font-size: 24px;
+      font-weight: 700;
+      word-wrap: break-word;
+      hyphens: auto;
+      max-width: 100%;
+    }
+
+    .card .back {
+      transform: rotateY(180deg);
+      background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+      color: white;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+    }
+
+    .card .back .meaning {
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 1.5;
+      overflow-y: auto;
+      max-height: 100%;
+      word-wrap: break-word;
+      hyphens: auto;
+      text-align: left;
+      width: 100%;
+    }
+
+    .card .back .meaning::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    .card .back .meaning::-webkit-scrollbar-track {
+      background: rgba(255,255,255,0.1);
+      border-radius: 2px;
+    }
+
+    .card .back .meaning::-webkit-scrollbar-thumb {
+      background: rgba(255,255,255,0.3);
+      border-radius: 2px;
+    }
+
+    .card .back .meaning::-webkit-scrollbar-thumb:hover {
+      background: rgba(255,255,255,0.5);
+    }
+
+    #flashcards-controls {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin-top: 20px;
+      flex-wrap: wrap;
+    }
+
+    #flashcards-controls button {
+      padding: 12px 16px;
+      border: 1px solid #dee2e6;
+      border-radius: 8px;
+      cursor: pointer;
+      background: #fff;
+      font-weight: 600;
+      font-size: 14px;
+      color: #495057;
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+
+    #flashcards-controls button:hover {
+      background: #007bff;
+      color: white;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,123,255,0.3);
+    }
+
+    #flashcards-controls button.delete-flashcard {
+      background: #dc3545;
+      color: white;
+      border-color: #dc3545;
+    }
+
+    #flashcards-controls button.delete-flashcard:hover {
+      background: #c82333;
+      border-color: #c82333;
+      box-shadow: 0 4px 12px rgba(220,53,69,0.3);
+    }
+
+    /* Custom scrollbar */
+    #history::-webkit-scrollbar, #flashcards::-webkit-scrollbar, #main::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    #history::-webkit-scrollbar-track, #flashcards::-webkit-scrollbar-track, #main::-webkit-scrollbar-track {
+      background: #f1f3f4;
+      border-radius: 3px;
+    }
+
+    #history::-webkit-scrollbar-thumb, #flashcards::-webkit-scrollbar-thumb, #main::-webkit-scrollbar-thumb {
+      background: #c1c8cd;
+      border-radius: 3px;
+    }
+
+    #history::-webkit-scrollbar-thumb:hover, #flashcards::-webkit-scrollbar-thumb:hover, #main::-webkit-scrollbar-thumb:hover {
+      background: #a8b2ba;
+    }
+
+    /* Responsive design */
+    @media (max-width: 768px) {
+      body {
+        flex-direction: column;
+      }
+      
+      #sidebar {
+        width: 100%;
+        max-height: 50vh;
+      }
+      
+      #main {
+        padding: 16px;
+      }
+
+      #uploadForm, #language-section {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      #flashcard-container {
+        width: 280px;
+      }
+
+      .card {
+        height: 220px;
+      }
+
+      .card .front .word {
+        font-size: 20px;
+      }
+
+      .card .back .meaning {
+        font-size: 13px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      #sidebar {
+        width: 100%;
+        max-height: 40vh;
+      }
+
+      #flashcard-container {
+        width: 100%;
+        max-width: 260px;
+      }
+
+      .card {
+        height: 200px;
+      }
+
+      .card .front .word {
+        font-size: 18px;
+      }
+
+      .card .back .meaning {
+        font-size: 12px;
+      }
+
+      #flashcards-controls {
+        flex-direction: column;
+      }
+
+      #flashcards-controls button {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Main workspace -->
+  <div id="main">
+    <h2>📄 Upload a PDF - v2</h2>
+    
+    <!-- ✅ Language Selector -->
+    <div id="language-section">
+      <label for="language-select">🌍 Select Language:</label>
+      <input type="text" id="language-select" placeholder="Type any language (e.g., Telugu, Tamil, Swahili...)" 
+             list="language-suggestions" style="padding: 10px 14px; border: 2px solid #90caf9; border-radius: 8px; 
+             background: #fff; font-size: 14px; font-weight: 500; color: #333; flex: 1;" />
+      <datalist id="language-suggestions">
+        <option value="English">
+        <option value="Spanish">
+        <option value="French">
+        <option value="German">
+        <option value="Italian">
+        <option value="Portuguese">
+        <option value="Dutch">
+        <option value="Russian">
+        <option value="Chinese">
+        <option value="Japanese">
+        <option value="Korean">
+        <option value="Arabic">
+        <option value="Hindi">
+        <option value="Telugu">
+        <option value="Tamil">
+        <option value="Bengali">
+        <option value="Marathi">
+        <option value="Gujarati">
+        <option value="Kannada">
+        <option value="Malayalam">
+        <option value="Punjabi">
+        <option value="Urdu">
+        <option value="Turkish">
+        <option value="Polish">
+        <option value="Swedish">
+        <option value="Norwegian">
+        <option value="Danish">
+        <option value="Finnish">
+        <option value="Greek">
+        <option value="Czech">
+        <option value="Hungarian">
+        <option value="Romanian">
+        <option value="Vietnamese">
+        <option value="Thai">
+        <option value="Indonesian">
+        <option value="Malay">
+        <option value="Tagalog">
+        <option value="Swahili">
+        <option value="Zulu">
+        <option value="Afrikaans">
+        <option value="Hebrew">
+        <option value="Persian">
+        <option value="Ukrainian">
+        <option value="Bulgarian">
+        <option value="Serbian">
+        <option value="Croatian">
+        <option value="Slovak">
+        <option value="Slovenian">
+        <option value="Lithuanian">
+        <option value="Latvian">
+        <option value="Estonian">
+        <option value="Icelandic">
+        <option value="Irish">
+        <option value="Welsh">
+        <option value="Basque">
+        <option value="Catalan">
+        <option value="Galician">
+      </datalist>
+    </div>
+
+    <form id="uploadForm" enctype="multipart/form-data">
+      <input type="file" name="file" accept="application/pdf" />
+      <button type="submit">Upload</button>
+    </form>
+    <div id="status"></div>
+    <div id="pdf-container"></div>
+    <div id="tooltip"></div>
+  </div>
+
+  <!-- Sidebar with history + flashcards -->
+  <div id="sidebar">
+    <nav>
+      <button id="tab-history" class="active">📜 History</button>
+      <button id="tab-flashcards">🎴 Flashcards</button>
+    </nav>
+    <div id="history">
+      <h3>📜 History</h3>
+      <div id="history-list"></div>
+    </div>
+    <div id="flashcards" style="display:none;">
+      <h3>🎴 Flashcards</h3>
+      <div id="flashcard-container">
+        <div id="flashcard" class="card">
+          <div class="front">
+            <div class="word">No cards yet</div>
+          </div>
+          <div class="back">
+            <div class="meaning"></div>
+          </div>
+        </div>
+      </div>
+      <div id="flashcards-controls">
+        <button id="prevCard">⬅ Prev</button>
+        <button id="nextCard">Next ➡</button>
+        <button id="deleteCard" class="delete-flashcard">🗑 Delete</button>
+        <button id="shuffleCards">🔀 Shuffle</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PDF.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.min.js"></script>
+  <script>
+    pdfjsLib.GlobalWorkerOptions.workerSrc =
+      "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.worker.min.js";
+
+    const form = document.getElementById("uploadForm");
+    const statusEl = document.getElementById("status");
+    const container = document.getElementById("pdf-container");
+    const tooltip = document.getElementById("tooltip");
+    const historyList = document.getElementById("history-list");
+    const languageSelect = document.getElementById("language-select");
+
+    // ✅ Store selected language in memory
+    let selectedLanguage = "English";
+
+    // ✅ Update language when changed
+    languageSelect.addEventListener("change", (e) => {
+      selectedLanguage = e.target.value;
+      console.log("Language changed to:", selectedLanguage);
+    });
+
+    // Tabs
+    const tabHistory = document.getElementById("tab-history");
+    const tabFlashcards = document.getElementById("tab-flashcards");
+    tabHistory.addEventListener("click", () => {
+      tabHistory.classList.add("active");
+      tabFlashcards.classList.remove("active");
+      document.getElementById("history").style.display = "block";
+      document.getElementById("flashcards").style.display = "none";
+    });
+    tabFlashcards.addEventListener("click", () => {
+      tabFlashcards.classList.add("active");
+      tabHistory.classList.remove("active");
+      document.getElementById("history").style.display = "none";
+      document.getElementById("flashcards").style.display = "block";
+    });
+
+    // Flashcards
+    let flashcards = [];
+    let currentIndex = 0;
+    let historyWords = new Set();
+
+    function addFlashcard(word, meaning) {
+      flashcards.push({ word, meaning });
+    }
+
+    function addToHistory(word, meaning) {
+      if (historyWords.has(word.toLowerCase())) {
+        return;
+      }
+      
+      historyWords.add(word.toLowerCase());
+      
+      const item = document.createElement("div");
+      item.className = "history-item";
+      item.dataset.word = word.toLowerCase();
+      
+      const wordEl = document.createElement("div");
+      wordEl.className = "word";
+      wordEl.textContent = word;
+      
+      const meaningEl = document.createElement("div");
+      meaningEl.className = "meaning";
+      meaningEl.textContent = meaning;
+      
+      const deleteBtn = document.createElement("button");
+      deleteBtn.className = "delete-btn";
+      deleteBtn.innerHTML = "×";
+      deleteBtn.title = "Delete this entry";
+      deleteBtn.onclick = function(e) {
+        e.stopPropagation();
+        historyWords.delete(word.toLowerCase());
+        const flashcardIndex = flashcards.findIndex(card => card.word.toLowerCase() === word.toLowerCase());
+        if (flashcardIndex !== -1) {
+          flashcards.splice(flashcardIndex, 1);
+          if (currentIndex >= flashcards.length && flashcards.length > 0) {
+            currentIndex = flashcards.length - 1;
+          }
+          if (flashcards.length > 0) {
+            renderFlashcard(currentIndex);
+          } else {
+            const card = document.getElementById("flashcard");
+            card.querySelector(".front .word").textContent = "No cards yet";
+            card.querySelector(".back .meaning").textContent = "";
+            currentIndex = 0;
+          }
+        }
+        item.remove();
+      };
+      
+      if (meaning.length > 150) {
+        const expandBtn = document.createElement("button");
+        expandBtn.className = "expand-btn";
+        expandBtn.textContent = "Read more";
+        expandBtn.onclick = function() {
+          if (meaningEl.classList.contains("expanded")) {
+            meaningEl.classList.remove("expanded");
+            expandBtn.textContent = "Read more";
+          } else {
+            meaningEl.classList.add("expanded");
+            expandBtn.textContent = "Show less";
+          }
+        };
+        item.appendChild(wordEl);
+        item.appendChild(meaningEl);
+        item.appendChild(expandBtn);
+        item.appendChild(deleteBtn);
+      } else {
+        item.appendChild(wordEl);
+        item.appendChild(meaningEl);
+        item.appendChild(deleteBtn);
+      }
+      
+      historyList.prepend(item);
+    }
+
+    function renderFlashcard(index) {
+      if (flashcards.length === 0) return;
+      const card = document.getElementById("flashcard");
+      const frontEl = card.querySelector(".front");
+      const backEl = card.querySelector(".back");
+      
+      frontEl.innerHTML = '';
+      backEl.innerHTML = '';
+      
+      const wordDiv = document.createElement("div");
+      wordDiv.className = "word";
+      wordDiv.textContent = flashcards[index].word;
+      frontEl.appendChild(wordDiv);
+      
+      const meaningDiv = document.createElement("div");
+      meaningDiv.className = "meaning";
+      meaningDiv.textContent = flashcards[index].meaning;
+      backEl.appendChild(meaningDiv);
+      
+      card.classList.remove("flip");
+    }
+
+    document.getElementById("flashcard").addEventListener("click", () => {
+      document.getElementById("flashcard").classList.toggle("flip");
+    });
+
+    document.getElementById("nextCard").addEventListener("click", () => {
+      if (flashcards.length === 0) return;
+      currentIndex = (currentIndex + 1) % flashcards.length;
+      renderFlashcard(currentIndex);
+    });
+    document.getElementById("prevCard").addEventListener("click", () => {
+      if (flashcards.length === 0) return;
+      currentIndex = (currentIndex - 1 + flashcards.length) % flashcards.length;
+      renderFlashcard(currentIndex);
+    });
+    document.getElementById("shuffleCards").addEventListener("click", () => {
+      if (flashcards.length === 0) return;
+      flashcards = flashcards.sort(() => Math.random() - 0.5);
+      currentIndex = 0;
+      renderFlashcard(currentIndex);
+    });
+
+    document.getElementById("deleteCard").addEventListener("click", () => {
+      if (flashcards.length === 0) return;
+      
+      const currentWord = flashcards[currentIndex].word;
+      
+      flashcards.splice(currentIndex, 1);
+      
+      historyWords.delete(currentWord.toLowerCase());
+      const historyItem = document.querySelector(`[data-word="${currentWord.toLowerCase()}"]`);
+      if (historyItem) {
+        historyItem.remove();
+      }
+      
+      if (flashcards.length === 0) {
+        const card = document.getElementById("flashcard");
+        card.querySelector(".front .word").textContent = "No cards yet";
+        card.querySelector(".back .meaning").textContent = "";
+        currentIndex = 0;
+      } else {
+        if (currentIndex >= flashcards.length) {
+          currentIndex = flashcards.length - 1;
+        }
+        renderFlashcard(currentIndex);
+      }
+    });
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      statusEl.textContent = "Uploading…";
+      const fileInput = form.querySelector('input[type="file"]');
+      if (!fileInput.files.length) {
+        statusEl.textContent = "Please choose a PDF first.";
+        return;
+      }
+      const fd = new FormData();
+      fd.append("file", fileInput.files[0]);
+
+      const res = await fetch("/upload", { method: "POST", body: fd });
+      const data = await res.json();
+      if (data.filename) {
+        statusEl.textContent = "Rendering…";
+        await renderPDF("/pdf/" + encodeURIComponent(data.filename));
+        statusEl.textContent = "Ready. Select text to see meaning.";
+      } else {
+        statusEl.textContent = data.error || "Upload failed.";
+      }
+    });
+
+    async function renderPDF(url) {
+      container.innerHTML = "";
+      const pdf = await pdfjsLib.getDocument(url).promise;
+      for (let i = 1; i <= pdf.numPages; i++) {
+        const page = await pdf.getPage(i);
+        const viewport = page.getViewport({ scale: 1.2 });
+
+        const pageContainer = document.createElement("div");
+        pageContainer.className = "page-container";
+        pageContainer.style.width = viewport.width + "px";
+        pageContainer.style.height = viewport.height + "px";
+        container.appendChild(pageContainer);
+
+        const canvas = document.createElement("canvas");
+        const ctx = canvas.getContext("2d");
+        canvas.width = viewport.width;
+        canvas.height = viewport.height;
+        pageContainer.appendChild(canvas);
+
+        await page.render({ canvasContext: ctx, viewport }).promise;
+
+        const textContent = await page.getTextContent();
+        const textLayerDiv = document.createElement("div");
+        textLayerDiv.className = "textLayer";
+        textLayerDiv.style.width = canvas.width + "px";
+        textLayerDiv.style.height = canvas.height + "px";
+        pageContainer.appendChild(textLayerDiv);
+
+        pdfjsLib.renderTextLayer({
+          textContent,
+          container: textLayerDiv,
+          viewport,
+          textDivs: []
+        });
+      }
+    }
+
+    document.addEventListener("mouseup", async () => {
+      const selObj = window.getSelection();
+      const selection = selObj.toString().trim();
+      if (!selection || selection.length < 2) {
+        tooltip.style.display = "none";
+        return;
+      }
+
+      let range;
+      try { range = selObj.getRangeAt(0); }
+      catch { tooltip.style.display = "none"; return; }
+
+      const isInside = container.contains(range.commonAncestorContainer);
+      if (!isInside) {
+        tooltip.style.display = "none";
+        return;
+      }
+
+      const rect = range.getBoundingClientRect();
+      tooltip.style.top = (rect.top - 12 + window.scrollY) + "px";
+      tooltip.style.left = (rect.left + window.scrollX) + "px";
+      tooltip.textContent = "Analyzing…";
+      tooltip.style.display = "block";
+
+      let ctxNode = selObj.anchorNode;
+      while (ctxNode && ctxNode.nodeType === 3) ctxNode = ctxNode.parentElement;
+      const context = (ctxNode?.innerText || "").trim();
+
+      try {
+        // ✅ Include selected language in the request
+        const res = await fetch("/meaning", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ 
+            selection, 
+            context,
+            language: selectedLanguage  // ✅ Pass the language
+          })
+        });
+        const data = await res.json();
+        const meaning = data.meaning || data.error || "No meaning found";
+
+        tooltip.textContent = meaning;
+
+        addToHistory(selection, meaning);
+
+        addFlashcard(selection, meaning);
+        if (flashcards.length === 1) renderFlashcard(0);
+      } catch (e) {
+        console.error(e);
+        tooltip.textContent = "Error fetching meaning.";
+      }
+    });
+  </script>
+</body>
+</html>
