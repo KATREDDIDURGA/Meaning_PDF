@@ -43,9 +43,7 @@ python -m nltk.downloader punkt punkt_tab
 5️⃣ Set Groq API Key
 
 Get your API key from Groq Console
-.
 
-export GROQ_API_KEY="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" 
 
 ▶️ Run Application
 python app.py
